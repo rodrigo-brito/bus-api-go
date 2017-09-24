@@ -88,6 +88,15 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/gopherjs/gopherjs/js",
+			"repository": "https://github.com/gopherjs/gopherjs",
+			"vcs": "git",
+			"revision": "b40cd48c38f9a18eb3db20d163bad78de12cf0b7",
+			"branch": "master",
+			"path": "/js",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/hashicorp/hcl",
 			"repository": "https://github.com/hashicorp/hcl",
 			"vcs": "git",
@@ -96,10 +105,26 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/jtolds/gls",
+			"repository": "https://github.com/jtolds/gls",
+			"vcs": "git",
+			"revision": "77f18212c9c7edc9bd6a33d383a7b545ce62f064",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/julienschmidt/httprouter",
 			"repository": "https://github.com/julienschmidt/httprouter",
 			"vcs": "git",
 			"revision": "975b5c4c7c21c0e3d2764200bf2aa8e34657ae6e",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/kisielk/sqlstruct",
+			"repository": "https://github.com/kisielk/sqlstruct",
+			"vcs": "git",
+			"revision": "648daed35d49dac24a4bff253b190a80da3ab6a5",
 			"branch": "master",
 			"notests": true
 		},
@@ -156,6 +181,22 @@
 			"repository": "https://github.com/pkg/sftp",
 			"vcs": "git",
 			"revision": "98203f5a8333288eb3163b7c667d4260fe1333e9",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/smartystreets/assertions",
+			"repository": "https://github.com/smartystreets/assertions",
+			"vcs": "git",
+			"revision": "9c0ea8acbc1d8ad689f9e6fe0c1fa5838e0cabc2",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/smartystreets/goconvey",
+			"repository": "https://github.com/smartystreets/goconvey",
+			"vcs": "git",
+			"revision": "e5b2b7c9111590d019a696c7800593f666e1a7f4",
 			"branch": "master",
 			"notests": true
 		},
@@ -359,6 +400,14 @@
 			"revision": "1cbadb444a806fd9430d14ad08967ed91da4fa0a",
 			"branch": "master",
 			"path": "/unicode/norm",
+			"notests": true
+		},
+		{
+			"importpath": "gopkg.in/DATA-DOG/go-sqlmock.v1",
+			"repository": "https://gopkg.in/DATA-DOG/go-sqlmock.v1",
+			"vcs": "git",
+			"revision": "b983233bc0bbea4dc6e8ec8c8c923d935765ffec",
+			"branch": "master",
 			"notests": true
 		},
 		{
