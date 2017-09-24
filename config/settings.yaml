@@ -1,0 +1,6 @@
+mysql:
+  database: "bus"
+  user: "root"
+  password: "root"
+
+port: 5000

@@ -1,0 +1,19 @@
+version: "3.1"
+
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "12000:80"
+    links:
+      - "db:db"
+    volumes:
+      - /var/lib/mysql:/var/lib/mysql
