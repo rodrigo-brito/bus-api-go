@@ -19,7 +19,7 @@ notifications:
   email: false
 
 script:
-  - go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+  - go test -race ./...
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
