@@ -3,23 +3,18 @@ package repository
 import (
 	"database/sql"
 
-	"path/filepath"
-
 	"github.com/golang/glog"
 	"github.com/nleof/goyesql"
 	"github.com/rodrigo-brito/bus-api-go/domain/bus/model"
 	"github.com/rodrigo-brito/bus-api-go/domain/schedule/repository"
+	"github.com/rodrigo-brito/bus-api-go/lib/environment"
 	"github.com/rodrigo-brito/bus-api-go/lib/mysql"
 )
 
 var queries goyesql.Queries
 
 func init() {
-	path, err := filepath.Abs("./domain/bus/repository/queries.sql")
-	if err != nil {
-		glog.Error(err)
-		panic(err)
-	}
+	path := environment.AbsPath("domain/bus/repository/queries.sql")
 	queries = goyesql.MustParseFile(path)
 }
 

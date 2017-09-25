@@ -9,6 +9,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/golang/glog"
+	"github.com/rodrigo-brito/bus-api-go/lib/mysql/iface"
 	"github.com/spf13/viper"
 )
 
@@ -24,11 +25,15 @@ var (
 	once sync.Once
 )
 
-func GetConnection() *sql.DB {
+func GetConnection() iface.DBIface {
 	once.Do(func() {
 		initConnection()
 	})
 	return db
+}
+
+func CloseConnection() {
+	db.Close()
 }
 
 func initConnection() {
