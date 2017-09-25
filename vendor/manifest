@@ -10,6 +10,14 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/bouk/monkey",
+			"repository": "https://github.com/bouk/monkey",
+			"vcs": "git",
+			"revision": "b96e337f6e5b36906584cd0cf9803bbab09284f7",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/coreos/etcd/client",
 			"repository": "https://github.com/coreos/etcd",
 			"vcs": "git",
