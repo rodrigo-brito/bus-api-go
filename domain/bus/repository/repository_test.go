@@ -32,7 +32,7 @@ func TestGetAll(t *testing.T) {
 				So(err, ShouldBeNil)
 				So(result, ShouldHaveLength, 1)
 				So(result[0].ID, ShouldEqual, 1)
-				So(*result[0].Number, ShouldEqual, 4988)
+				So(*result[0].Number, ShouldEqual, "4988")
 				So(result[0].Name, ShouldEqual, "Bus One")
 				So(result[0].Fare, ShouldEqual, 3.1)
 				So(mock.ExpectationsWereMet(), ShouldBeNil)
@@ -67,12 +67,12 @@ func TestGet(t *testing.T) {
 
 				mock.ExpectQuery(regexp.QuoteMeta(query)).WithArgs(int64(1)).WillReturnRows(
 					sqlmock.NewRows([]string{"id", "number", "name", "fare"}).
-						AddRow(1, 4988, "Bus One", 3.1))
+						AddRow(1, "4988", "Bus One", 3.1))
 				result, err := Get(1, false)
 
 				So(err, ShouldBeNil)
 				So(result.ID, ShouldEqual, 1)
-				So(*result.Number, ShouldEqual, 4988)
+				So(*result.Number, ShouldEqual, "4988")
 				So(result.Name, ShouldEqual, "Bus One")
 				So(result.Fare, ShouldEqual, 3.1)
 				So(mock.ExpectationsWereMet(), ShouldBeNil)
@@ -93,7 +93,7 @@ func TestGet(t *testing.T) {
 
 				mock.ExpectQuery(regexp.QuoteMeta(query)).WithArgs(int64(1)).WillReturnRows(
 					sqlmock.NewRows([]string{"id", "number", "name", "fare"}).
-						AddRow(1, 4988, "Bus One", 3.1))
+						AddRow(1, "4988", "Bus One", 3.1))
 				result, err := Get(1, true)
 
 				So(err, ShouldBeNil)
@@ -117,7 +117,7 @@ func TestGet(t *testing.T) {
 
 				mock.ExpectQuery(regexp.QuoteMeta(query)).WithArgs(int64(1)).WillReturnRows(
 					sqlmock.NewRows([]string{"id", "number", "name", "fare"}).
-						AddRow(1, 4988, "Bus One", 3.1))
+						AddRow(1, "4988", "Bus One", 3.1))
 				result, err := Get(1, true)
 
 				So(err, ShouldBeNil)

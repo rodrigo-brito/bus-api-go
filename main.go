@@ -8,8 +8,8 @@ import (
 
 	routes "github.com/rodrigo-brito/bus-api-go/action/cli/server/http"
 	_ "github.com/rodrigo-brito/bus-api-go/config"
-	"github.com/spf13/viper"
 	"github.com/rodrigo-brito/bus-api-go/lib/mysql"
+	"github.com/spf13/viper"
 )
 
 func main() {

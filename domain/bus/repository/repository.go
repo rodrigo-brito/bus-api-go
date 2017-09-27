@@ -49,6 +49,15 @@ func Get(ID int64, injectSchedule bool) (*model.Bus, error) {
 	return nil, nil
 }
 
+func GetByCompany(companyID int64) ([]*model.Bus, error) {
+	conn := mysql.GetConnection()
+	rows, err := conn.Query(queries["by-company"], companyID)
+	if err != nil {
+		return nil, err
+	}
+	return parseRows(rows)
+}
+
 func injectSchedules(bus *model.Bus) {
 	schedules, err := repository.FetchManyByBus(bus.ID)
 	if err != nil {

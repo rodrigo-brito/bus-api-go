@@ -12,5 +12,8 @@ func InjectAPIRoutes() *httprouter.Router {
 	router.GET("/api/v1/bus/:id", api.GetBusHandle)
 	router.GET("/api/v1/bus/:id/schedule", api.GetBusScheduleHandle)
 	router.GET("/api/v1/bus/:id/schedule/daytype", api.GetDayTypeScheduleHandle)
+	router.GET("/api/v1/company", api.CompanyHandle)
+	router.GET("/api/v1/company/:id", api.GetCompanyHandle)
+	router.GET("/api/v1/company/:id/bus", api.BusByCompanyHandle)
 	return router
 }
