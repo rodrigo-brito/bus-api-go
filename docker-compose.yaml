@@ -7,6 +7,7 @@ services:
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
+    restart: always
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:
@@ -17,3 +18,14 @@ services:
       - "db:db"
     volumes:
       - /var/lib/mysql:/var/lib/mysql
+  go:
+    image: golang:1.9
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+    working_dir: /go/src/github.com/rodrigo-brito/bus-api-go
+    volumes:
+      - ./:/go/src/github.com/rodrigo-brito/bus-api-go
+    command: go run main.go
+    restart: always
