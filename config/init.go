@@ -4,17 +4,13 @@ import (
 	"bytes"
 	"io/ioutil"
 
-	"path/filepath"
-
+	"github.com/rodrigo-brito/bus-api-go/lib/environment"
 	"github.com/spf13/viper"
 )
 
 func init() {
 	viper.SetConfigType("yaml")
-	path, err := filepath.Abs("./config/settings.yaml")
-	if err != nil {
-		panic(err)
-	}
+	path := environment.AbsPath("./config/settings.yaml")
 	settings, err := ioutil.ReadFile(path)
 	if err != nil {
 		panic(err)
