@@ -1,6 +1,19 @@
 version: "3.1"
 
 services:
+  ngixn:
+    image: nginx
+    depends_on:
+      - apionibus
+      - phpmyadmin
+    volumes:
+        - "./conf/default.conf:/etc/nginx/nginx.conf"
+    ports:
+      - "80:80"
+      - "443:443"
+    links:
+      - apionibus
+      - phpmyadmin
   db:
     image: mysql
     environment:
@@ -13,10 +26,10 @@ services:
     ports:
       - "12000:80"
     links:
-      - "db:db"
+      - db
     volumes:
       - /var/lib/mysql:/var/lib/mysql
-  go:
+  apionibus:
     image: golang:1.9
     ports:
       - "5000:5000"
