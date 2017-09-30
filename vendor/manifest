@@ -18,6 +18,22 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/codegangsta/inject",
+			"repository": "https://github.com/codegangsta/inject",
+			"vcs": "git",
+			"revision": "33e0aa1cb7c019ccc3fbe049a8262a6403d30504",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/codegangsta/negroni",
+			"repository": "https://github.com/codegangsta/negroni",
+			"vcs": "git",
+			"revision": "f764158de23f0896672ed51f40c119cc15edc12f",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/coreos/etcd/client",
 			"repository": "https://github.com/coreos/etcd",
 			"vcs": "git",
@@ -80,10 +96,26 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/go-martini/martini",
+			"repository": "https://github.com/go-martini/martini",
+			"vcs": "git",
+			"revision": "22fa46961aabd2665cf3f1343b146d20028f5071",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/go-sql-driver/mysql",
 			"repository": "https://github.com/go-sql-driver/mysql",
 			"vcs": "git",
 			"revision": "be22b3051b3467094e9908389d900e74f72cf08f",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/goji/param",
+			"repository": "https://github.com/goji/param",
+			"vcs": "git",
+			"revision": "d7f49fd7d1ed53fd562e737a8b5bbcc7e3d925e2",
 			"branch": "master",
 			"notests": true
 		},
@@ -102,6 +134,22 @@
 			"revision": "b40cd48c38f9a18eb3db20d163bad78de12cf0b7",
 			"branch": "master",
 			"path": "/js",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/gorilla/context",
+			"repository": "https://github.com/gorilla/context",
+			"vcs": "git",
+			"revision": "08b5f424b9271eedf6f9f0ce86cb9396ed337a42",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/gorilla/mux",
+			"repository": "https://github.com/gorilla/mux",
+			"vcs": "git",
+			"revision": "3f19343c7d9ce75569b952758bd236af94956061",
+			"branch": "master",
 			"notests": true
 		},
 		{
@@ -125,6 +173,14 @@
 			"repository": "https://github.com/julienschmidt/httprouter",
 			"vcs": "git",
 			"revision": "975b5c4c7c21c0e3d2764200bf2aa8e34657ae6e",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/justinas/alice",
+			"repository": "https://github.com/justinas/alice",
+			"vcs": "git",
+			"revision": "1051eaf52fcafdd87ead59d28b065f1fcb8274ec",
 			"branch": "master",
 			"notests": true
 		},
@@ -153,6 +209,14 @@
 			"notests": true
 		},
 		{
+			"importpath": "github.com/martini-contrib/render",
+			"repository": "https://github.com/martini-contrib/render",
+			"vcs": "git",
+			"revision": "ec18f8345a1181146728238980606fb1d6f40e8c",
+			"branch": "master",
+			"notests": true
+		},
+		{
 			"importpath": "github.com/mitchellh/mapstructure",
 			"repository": "https://github.com/mitchellh/mapstructure",
 			"vcs": "git",
@@ -165,6 +229,14 @@
 			"repository": "https://github.com/nleof/goyesql",
 			"vcs": "git",
 			"revision": "11d8984770c87d35a00c9254bd1c363d41a6774f",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/oxtoacart/bpool",
+			"repository": "https://github.com/oxtoacart/bpool",
+			"vcs": "git",
+			"revision": "4e1c5567d7c2dd59fa4c7c83d34c2f3528b025d6",
 			"branch": "master",
 			"notests": true
 		},
@@ -189,6 +261,14 @@
 			"repository": "https://github.com/pkg/sftp",
 			"vcs": "git",
 			"revision": "98203f5a8333288eb3163b7c667d4260fe1333e9",
+			"branch": "master",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/rs/cors",
+			"repository": "https://github.com/rs/cors",
+			"vcs": "git",
+			"revision": "eabcc6af4bbe5ad3a949d36450326a2b0b9894b8",
 			"branch": "master",
 			"notests": true
 		},
@@ -282,6 +362,14 @@
 			"revision": "b2862e3d0a775f18c7cfe02273500ae307b61218",
 			"branch": "master",
 			"path": "encoding/secconf",
+			"notests": true
+		},
+		{
+			"importpath": "github.com/zenazn/goji",
+			"repository": "https://github.com/zenazn/goji",
+			"vcs": "git",
+			"revision": "c05078ca81941f8e801bba3ddc0e6b86b7fdc893",
+			"branch": "master",
 			"notests": true
 		},
 		{
