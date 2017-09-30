@@ -1,8 +1,0 @@
-mysql:
-  address: "db"
-  port: 3306
-  database: "bus"
-  user: "root"
-  password: "root"
-
-port: 5000

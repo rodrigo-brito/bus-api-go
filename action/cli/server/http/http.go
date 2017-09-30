@@ -8,6 +8,7 @@ import (
 func InjectAPIRoutes() *httprouter.Router {
 	router := httprouter.New()
 	router.GET("/status", api.StatusHandle)
+	router.POST("/msg/mail", api.ContactHandle)
 	router.GET("/api/v1/bus", api.BusHandle)
 	router.GET("/api/v1/bus/:id", api.GetBusHandle)
 	router.GET("/api/v1/bus/:id/schedule", api.GetBusScheduleHandle)

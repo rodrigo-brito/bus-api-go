@@ -1,1 +1,3 @@
 .idea
+docker-compose.yaml
+config/settings.yaml
