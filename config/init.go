@@ -10,7 +10,7 @@ import (
 
 func init() {
 	viper.SetConfigType("yaml")
-	path := environment.AbsPath("./config/settings.yaml")
+	path := environment.AbsPath("config/settings.yaml")
 	settings, err := ioutil.ReadFile(path)
 	if err != nil {
 		panic(err)
