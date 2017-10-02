@@ -18,4 +18,4 @@ install:
 script:
   - go list -f '{{if len .TestGoFiles}}"go test -coverprofile={{.Dir}}/.coverprofile {{.ImportPath}}"{{end}}' ./... | xargs sh -c
   - gover
-  - goveralls -coverprofile=gover.coverprofile -service=travis-ci -repotoken $COVERALLS_TOKEN
+  - goveralls -coverprofile=gover.coverprofile -service=travis-ci
