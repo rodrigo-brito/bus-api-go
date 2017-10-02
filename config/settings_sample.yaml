@@ -1,0 +1,15 @@
+port: 5000
+
+mysql:
+  address: "db"
+  port: 3306
+  database: "bus"
+  user: "root"
+  password: "root"
+
+mail:
+  host: "smtp.gmail.com"
+  port: 587
+  username: "youremail@gmail.com"
+  password: "your password here"
+  destiny: "destiny@here.com"
