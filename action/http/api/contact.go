@@ -10,9 +10,9 @@ import (
 
 func ContactHandle(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	r.ParseForm()
-	email := r.FormValue("email")
-	name := r.FormValue("name")
-	message := r.FormValue("message")
+	email := r.Form.Get("email")
+	name := r.Form.Get("name")
+	message := r.Form.Get("message")
 
 	go func() {
 		err := mail.SendMessage(email, "Contato - Onibus Sabara (WEB)", name, message)
