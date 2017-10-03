@@ -16,6 +16,6 @@ install:
   - cp config/settings_sample.yaml config/settings.yaml
 
 script:
-  - go list -f '{{if len .TestGoFiles}}"go test -coverprofile={{.Dir}}/.coverprofile {{.ImportPath}}"{{end}}' ./... | xargs sh -c
+  - go list -f '{{if or (len .TestGoFiles) (len .XTestGoFiles)}}go test -coverprofile={{.Dir}}/.coverprofile {{.ImportPath}}{{end}}' ./... | xargs -I {} bash -c {}
   - gover
   - goveralls -coverprofile=gover.coverprofile -service=travis-ci
