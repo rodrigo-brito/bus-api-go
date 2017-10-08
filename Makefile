@@ -12,6 +12,6 @@ cover:
 update-restart:
 	git remote update origin
 	git rebase origin/master
-	docker-compose restart
+	cd docker && ./init.sh
 deploy:
 	ssh deploy@onibus.sabaramais.com.br 'cd /home/deploy/bus-api-go && make update-restart'
