@@ -30,6 +30,6 @@ mkdir -p ./volumes/nginx/www
 echo "Getting certificates..."
 # GetCert -d www.$BASE_URL -d $BASE_URL -d onibus.$BASE_URL
 
-docker-compose -p sabaramais up
+docker-compose -p sabaramais up -d
 # docker-compose logs
 
