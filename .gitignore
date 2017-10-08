@@ -1,5 +1,7 @@
 .idea
-docker-compose.yaml
+docker/docker-compose.yaml
+docker/letsencrypt
+docker/volumes
 config/settings.yaml
 
 *.coverprofile
