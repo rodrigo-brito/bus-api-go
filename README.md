@@ -12,7 +12,7 @@ cp config/settings_sample.yaml config/settings.yaml
 ```
 Start docker enviroment (`docker` and `docker-compose` required)
 ```
-docker-compose up -d
+make run
 ```
 Service avaliable in `http://localhost:5000`
 
