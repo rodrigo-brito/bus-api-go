@@ -1,0 +1,30 @@
+version: "3.1"
+
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./volumes/mysql:/var/lib/mysql
+      - ./database.sql:/tmp/database.sql
+    command: --init-file /tmp/database.sql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    depends_on:
+      - db
+    ports:
+      - 12000:80
+    links:
+      - db
+  api:
+    build: .
+    image: bus-api:dev
+    ports:
+      - 5000:5000
+    depends_on:
+      - db
+    working_dir: /go/src/github.com/rodrigo-brito/bus-api-go
+    volumes:
+      - ../:/go/src/github.com/rodrigo-brito/bus-api-go
+    command: /go/bin/watcher

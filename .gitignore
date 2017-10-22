@@ -1,6 +1,4 @@
 .idea
-docker/docker-compose.yaml
-docker/letsencrypt
 docker/volumes
 config/settings.yaml
 

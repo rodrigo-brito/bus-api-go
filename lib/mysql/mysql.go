@@ -13,13 +13,6 @@ import (
 	"github.com/spf13/viper"
 )
 
-type contextKey struct{}
-
-type bus struct {
-	id   int64
-	name string
-}
-
 var (
 	db   *sql.DB
 	once sync.Once
