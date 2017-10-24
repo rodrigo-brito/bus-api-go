@@ -3,11 +3,16 @@ package repository
 import (
 	"database/sql"
 
+	"fmt"
+
+	"time"
+
 	"github.com/golang/glog"
 	"github.com/nleof/goyesql"
 	"github.com/rodrigo-brito/bus-api-go/domain/bus/model"
 	"github.com/rodrigo-brito/bus-api-go/domain/schedule/repository"
 	"github.com/rodrigo-brito/bus-api-go/lib/environment"
+	"github.com/rodrigo-brito/bus-api-go/lib/memcached"
 	"github.com/rodrigo-brito/bus-api-go/lib/mysql"
 )
 
@@ -27,8 +32,25 @@ func GetAll() ([]*model.Bus, error) {
 	return parseRows(rows)
 }
 
+func getBusCacheKey(ID int64) string {
+	return fmt.Sprintf("bus-%d", ID)
+}
+
 func Get(ID int64, injectSchedule bool) (*model.Bus, error) {
 	conn := mysql.GetConnection()
+
+	bus := new(model.Bus)
+	key := getBusCacheKey(ID)
+	hit, err := memcached.Get(key, bus)
+	if err != nil {
+		return nil, err
+	}
+	if hit {
+		fmt.Println("From cache!")
+		return bus, nil
+	}
+
+	fmt.Println("From DB")
 	rows, err := conn.Query(queries["by-id"], ID)
 	if err != nil {
 		return nil, err
@@ -46,6 +68,7 @@ func Get(ID int64, injectSchedule bool) (*model.Bus, error) {
 		return bus, nil
 	}
 
+	memcached.Set(key, bus, 48*time.Hour)
 	return nil, nil
 }
 

@@ -9,6 +9,8 @@ services:
       - ./volumes/mysql:/var/lib/mysql
       - ./database.sql:/tmp/database.sql
     command: --init-file /tmp/database.sql
+  memcached:
+    image: memcached
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     depends_on:
@@ -24,6 +26,10 @@ services:
       - 5000:5000
     depends_on:
       - db
+      - memcached
+    links:
+      - db
+      - memcached
     working_dir: /go/src/github.com/rodrigo-brito/bus-api-go
     volumes:
       - ../:/go/src/github.com/rodrigo-brito/bus-api-go
