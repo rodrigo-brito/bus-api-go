@@ -3,11 +3,15 @@ package repository
 import (
 	"database/sql"
 
+	"fmt"
+	"time"
+
 	"github.com/golang/glog"
 	"github.com/nleof/goyesql"
 	"github.com/rodrigo-brito/bus-api-go/domain/daytype/model"
 	"github.com/rodrigo-brito/bus-api-go/domain/schedule/repository"
 	"github.com/rodrigo-brito/bus-api-go/lib/environment"
+	"github.com/rodrigo-brito/bus-api-go/lib/memcached"
 	"github.com/rodrigo-brito/bus-api-go/lib/mysql"
 )
 
@@ -18,17 +22,24 @@ func init() {
 	queries = goyesql.MustParseFile(path)
 }
 
+func getDayTyppeBusCacheKey(busID int64) string {
+	return fmt.Sprintf("daytype-bus-%d", busID)
+}
+
 func GetByBus(busID int64, injectSchedule bool) ([]*model.DayType, error) {
 	conn := mysql.GetConnection()
-	rows, err := conn.Query(queries["by-bus"], busID)
-	if err != nil {
-		return nil, err
-	}
 
-	dayTypes, err := parseRows(rows)
-	if err != nil {
-		return nil, err
-	}
+	var dayTypes []*model.DayType
+	key := getDayTyppeBusCacheKey(busID)
+
+	memcached.GetSet(key, &dayTypes, func() (interface{}, error) {
+		rows, err := conn.Query(queries["by-bus"], busID)
+		if err != nil {
+			return nil, err
+		}
+		res, err := parseRows(rows)
+		return &res, err
+	}, time.Hour*48)
 
 	if injectSchedule {
 		injectSchedules(dayTypes, busID)

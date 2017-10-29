@@ -7,7 +7,7 @@ mysql:
   user: "root"
   password: "root"
 
-memcahced:
+memcached:
   address: "memcached"
   port: 11211
 

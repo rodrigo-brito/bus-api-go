@@ -36,49 +36,57 @@ func getBusCacheKey(ID int64) string {
 	return fmt.Sprintf("bus-%d", ID)
 }
 
+func getBusCompanyCacheKey(companyID int64) string {
+	return fmt.Sprintf("bus-company-%d", companyID)
+}
+
 func Get(ID int64, injectSchedule bool) (*model.Bus, error) {
 	conn := mysql.GetConnection()
 
 	bus := new(model.Bus)
 	key := getBusCacheKey(ID)
-	hit, err := memcached.Get(key, bus)
-	if err != nil {
-		return nil, err
-	}
-	if hit {
-		fmt.Println("From cache!")
-		return bus, nil
-	}
 
-	fmt.Println("From DB")
-	rows, err := conn.Query(queries["by-id"], ID)
-	if err != nil {
-		return nil, err
-	}
+	err := memcached.GetSet(key, bus, func() (interface{}, error) {
+		rows, err := conn.Query(queries["by-id"], ID)
+		if err != nil {
+			return nil, err
+		}
 
-	var result []*model.Bus
+		var result []*model.Bus
 
-	if result, err = parseRows(rows); err != nil {
-		return nil, err
-	} else if len(result) > 0 {
-		bus := result[0]
-		if injectSchedule {
-			injectSchedules(bus)
+		if result, err = parseRows(rows); err != nil {
+			return nil, err
+		} else if len(result) > 0 {
+			bus = result[0]
 		}
 		return bus, nil
+	}, 48*time.Hour)
+
+	if err != nil {
+		return nil, err
 	}
 
-	memcached.Set(key, bus, 48*time.Hour)
-	return nil, nil
+	if !bus.IsEmpty() && injectSchedule {
+		injectSchedules(bus)
+	}
+
+	return bus, nil
 }
 
 func GetByCompany(companyID int64) ([]*model.Bus, error) {
 	conn := mysql.GetConnection()
-	rows, err := conn.Query(queries["by-company"], companyID)
-	if err != nil {
-		return nil, err
-	}
-	return parseRows(rows)
+
+	var bus []*model.Bus
+	key := getBusCompanyCacheKey(companyID)
+	err := memcached.GetSet(key, &bus, func() (interface{}, error) {
+		rows, err := conn.Query(queries["by-company"], companyID)
+		if err != nil {
+			return nil, err
+		}
+		return parseRows(rows)
+	}, time.Hour*48)
+
+	return bus, err
 }
 
 func injectSchedules(bus *model.Bus) {

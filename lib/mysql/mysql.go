@@ -37,4 +37,7 @@ func initConnection() {
 	if err != nil {
 		glog.Error(err)
 	}
+	if err := db.Ping(); err != nil {
+		glog.Error(err)
+	}
 }

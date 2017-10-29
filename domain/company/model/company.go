@@ -9,3 +9,8 @@ type Company struct {
 	Description string       `json:"description"`
 	Bus         []*model.Bus `json:"bus,omitempty"`
 }
+
+func (c *Company) IsEmpty() bool {
+	return c == nil || (c.ID == 0 && c.Name == "" && c.ImageURL == "" &&
+		c.Description == "" && len(c.Bus) == 0)
+}

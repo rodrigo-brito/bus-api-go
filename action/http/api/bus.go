@@ -12,7 +12,7 @@ import (
 	br "github.com/rodrigo-brito/bus-api-go/domain/bus/repository"
 )
 
-func BusHandle(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
+func BusHandle(w http.ResponseWriter, _ *http.Request, _ httprouter.Params) {
 	bus, err := br.GetAll()
 	if err != nil {
 		glog.Error(err)
@@ -26,7 +26,7 @@ func BusHandle(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 	}
 }
 
-func GetBusHandle(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func GetBusHandle(w http.ResponseWriter, _ *http.Request, p httprouter.Params) {
 	ID, err := strconv.ParseInt(p.ByName("id"), 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -66,7 +66,7 @@ func GetBusScheduleHandle(w http.ResponseWriter, r *http.Request, p httprouter.P
 	}
 }
 
-func BusByCompanyHandle(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func BusByCompanyHandle(w http.ResponseWriter, _ *http.Request, p httprouter.Params) {
 	ID, err := strconv.ParseInt(p.ByName("id"), 10, 64)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

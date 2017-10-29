@@ -9,3 +9,8 @@ type Bus struct {
 	Fare      float64           `json:"fare"`
 	Schedules []*model.Schedule `json:"schedules,omitempty"`
 }
+
+func (b *Bus) IsEmpty() bool {
+	return b == nil || (b.ID == 0 && b.Number == nil &&
+		b.Name == "" && len(b.Schedules) == 0)
+}

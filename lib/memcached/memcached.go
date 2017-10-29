@@ -7,6 +7,8 @@ import (
 
 	"time"
 
+	"reflect"
+
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/rodrigo-brito/bus-api-go/lib/memcached/iface"
 	"github.com/spf13/viper"
@@ -54,4 +56,21 @@ func Set(key string, value interface{}, TTL time.Duration) error {
 		Value:      bin,
 		Expiration: int32(TTL.Seconds()),
 	})
+}
+
+func GetSet(key string, value interface{}, getValue func() (interface{}, error), TTL time.Duration) error {
+	conn := getConnection()
+	item, err := conn.Get(key)
+	if err == memcache.ErrCacheMiss {
+		fromDB, err := getValue()
+		if err != nil {
+			return err
+		}
+		reflectValue := reflect.Indirect(reflect.ValueOf(value))
+		reflectValue.Set(reflect.Indirect(reflect.ValueOf(fromDB)))
+		return Set(key, value, TTL)
+	} else if err != nil {
+		return err
+	}
+	return decode(item.Value, value)
 }
