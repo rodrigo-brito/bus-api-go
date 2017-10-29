@@ -11,12 +11,24 @@ Copy the settings from sample:
 cp config/settings_sample.yaml config/settings.yaml
 ```
 Start docker enviroment (`docker` and `docker-compose` required)
-```
+```bash
 make run
 ```
 Service avaliable in `http://localhost:5000`
 
 Java Version with Spring Boot: https://github.com/rodrigo-brito/onibus-api
+
+### Endpoints
+
+- `/status` - Health check
+- `/msg/mail` - Email service
+- `/api/v1/bus` - All bus
+- `/api/v1/bus/:id` - Bus by ID
+- `/api/v1/bus/:id/schedule` - Schedules by bus ID
+- `/api/v1/bus/:id/schedule/daytype` - Bus schedules separated by day type
+- `/api/v1/company` - All companies
+- `/api/v1/company/:id` - Company by ID
+- `/api/v1/company/:id/bus` - Bus by company ID
 
 ### Projects that used it
 Ônibus Sabará: https://horarios.sabaramais.com.br
