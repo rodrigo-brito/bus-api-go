@@ -12,7 +12,10 @@ import (
 	"github.com/bradfitz/gomemcache/memcache"
 	"github.com/rodrigo-brito/bus-api-go/lib/memcached/iface"
 	"github.com/spf13/viper"
+	"golang.org/x/net/context"
 )
+
+type contextKey struct{}
 
 var (
 	once  sync.Once
@@ -73,4 +76,12 @@ func GetSet(key string, value interface{}, getValue func() (interface{}, error),
 		return err
 	}
 	return decode(item.Value, value)
+}
+
+func NewContext(parent context.Context) context.Context {
+	return context.WithValue(parent, contextKey{}, getConnection())
+}
+
+func FromContext(ctx context.Context) iface.MemcachedIface {
+	return ctx.Value(contextKey{}).(iface.MemcachedIface)
 }

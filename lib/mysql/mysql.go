@@ -11,7 +11,10 @@ import (
 	"github.com/golang/glog"
 	"github.com/rodrigo-brito/bus-api-go/lib/mysql/iface"
 	"github.com/spf13/viper"
+	"golang.org/x/net/context"
 )
+
+type contextKey struct{}
 
 var (
 	db   *sql.DB
@@ -40,4 +43,12 @@ func initConnection() {
 	if err := db.Ping(); err != nil {
 		glog.Error(err)
 	}
+}
+
+func NewContext(parent context.Context) context.Context {
+	return context.WithValue(parent, contextKey{}, GetConnection())
+}
+
+func FromContext(ctx context.Context) iface.DBIface {
+	return ctx.Value(contextKey{}).(iface.DBIface)
 }
