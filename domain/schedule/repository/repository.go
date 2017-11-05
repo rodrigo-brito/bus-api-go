@@ -7,6 +7,8 @@ import (
 
 	"time"
 
+	"context"
+
 	"github.com/nleof/goyesql"
 	"github.com/rodrigo-brito/bus-api-go/domain/schedule/model"
 	"github.com/rodrigo-brito/bus-api-go/lib/environment"
@@ -29,14 +31,15 @@ func getScheduleBusDayTypeCacheKey(busID int64, dayType int64) string {
 	return fmt.Sprintf("bus-daytype-schedule-%d-%d", busID, dayType)
 }
 
-func FetchManyByBus(busID int64) ([]*model.Schedule, error) {
-	conn := mysql.GetConnection()
+func FetchManyByBus(ctx context.Context, busID int64) ([]*model.Schedule, error) {
+	db := mysql.FromContext(ctx)
+	cache := memcached.FromContext(ctx)
 
 	var schedules []*model.Schedule
 	key := getScheduleBusCacheKey(busID)
 
-	err := memcached.GetSet(key, &schedules, func() (interface{}, error) {
-		rows, err := conn.Query(queries["by-bus"], busID)
+	err := cache.GetSet(key, &schedules, func() (interface{}, error) {
+		rows, err := db.Query(queries["by-bus"], busID)
 		if err != nil {
 			return nil, err
 		}
@@ -47,14 +50,15 @@ func FetchManyByBus(busID int64) ([]*model.Schedule, error) {
 	return schedules, err
 }
 
-func FetchManyByBusDayType(busID int64, dayTypeID int64) ([]*model.Schedule, error) {
-	conn := mysql.GetConnection()
+func FetchManyByBusDayType(ctx context.Context, busID int64, dayTypeID int64) ([]*model.Schedule, error) {
+	db := mysql.FromContext(ctx)
+	cache := memcached.FromContext(ctx)
 
 	var schedules []*model.Schedule
 	key := getScheduleBusDayTypeCacheKey(busID, dayTypeID)
 
-	err := memcached.GetSet(key, &schedules, func() (interface{}, error) {
-		rows, err := conn.Query(queries["by-bus-daytype"], busID, dayTypeID)
+	err := cache.GetSet(key, &schedules, func() (interface{}, error) {
+		rows, err := db.Query(queries["by-bus-daytype"], busID, dayTypeID)
 		if err != nil {
 			return nil, err
 		}

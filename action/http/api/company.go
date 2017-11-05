@@ -11,7 +11,7 @@ import (
 )
 
 func CompanyHandle(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
-	company, err := repository.GetAll()
+	company, err := repository.GetAll(r.Context())
 	if err != nil {
 		glog.Error(err)
 		w.WriteHeader(http.StatusServiceUnavailable)
@@ -31,7 +31,7 @@ func GetCompanyHandle(w http.ResponseWriter, r *http.Request, p httprouter.Param
 		glog.Error(err)
 		return
 	}
-	company, err := repository.Get(ID, false)
+	company, err := repository.Get(r.Context(), ID, false)
 	if err != nil {
 		glog.Error(err)
 		w.WriteHeader(http.StatusServiceUnavailable)

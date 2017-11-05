@@ -10,13 +10,16 @@ import (
 	"github.com/bouk/monkey"
 	"github.com/rodrigo-brito/bus-api-go/domain/schedule/model"
 	"github.com/rodrigo-brito/bus-api-go/domain/schedule/repository"
+	lcontext "github.com/rodrigo-brito/bus-api-go/lib/context"
 	"github.com/rodrigo-brito/bus-api-go/test/mysql"
 	"github.com/smartystreets/assertions/should"
 	. "github.com/smartystreets/goconvey/convey"
+	"golang.org/x/net/context"
 	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
 func TestGetAll(t *testing.T) {
+	ctx := lcontext.DefaultContext(true)
 	Convey("Given a working database connection", t, func() {
 		mock, err := mysql.GetDatabaseMock()
 		defer mysql.UnmockDatabase()
@@ -28,7 +31,7 @@ func TestGetAll(t *testing.T) {
 				mock.ExpectQuery(query).WillReturnRows(
 					sqlmock.NewRows([]string{"id", "number", "name", "fare"}).
 						AddRow(1, 4988, "Bus One", 3.1))
-				result, err := GetAll()
+				result, err := GetAll(ctx)
 				So(err, ShouldBeNil)
 				So(result, ShouldHaveLength, 1)
 				So(result[0].ID, ShouldEqual, 1)
@@ -45,7 +48,7 @@ func TestGetAll(t *testing.T) {
 
 				expected := errors.New("fail")
 				mock.ExpectQuery(query).WillReturnError(expected)
-				result, err := GetAll()
+				result, err := GetAll(ctx)
 
 				So(err, ShouldEqual, expected)
 				So(result, ShouldBeNil)
@@ -56,6 +59,7 @@ func TestGetAll(t *testing.T) {
 }
 
 func TestGet(t *testing.T) {
+	ctx := lcontext.DefaultContext(true)
 	Convey("Given a working database connection", t, func() {
 		mock, err := mysql.GetDatabaseMock()
 		defer mysql.UnmockDatabase()
@@ -68,7 +72,7 @@ func TestGet(t *testing.T) {
 				mock.ExpectQuery(regexp.QuoteMeta(query)).WithArgs(int64(1)).WillReturnRows(
 					sqlmock.NewRows([]string{"id", "number", "name", "fare"}).
 						AddRow(1, "4988", "Bus One", 3.1))
-				result, err := Get(1, false)
+				result, err := Get(ctx, 1, false)
 
 				So(err, ShouldBeNil)
 				So(result.ID, ShouldEqual, 1)
@@ -83,7 +87,7 @@ func TestGet(t *testing.T) {
 					new(model.Schedule),
 					new(model.Schedule),
 				}
-				monkey.Patch(repository.FetchManyByBus, func(busID int64) ([]*model.Schedule, error) {
+				monkey.Patch(repository.FetchManyByBus, func(ctx context.Context, busID int64) ([]*model.Schedule, error) {
 					return expectedSchedules, nil
 				})
 				defer monkey.Unpatch(repository.FetchManyByBus)
@@ -94,7 +98,7 @@ func TestGet(t *testing.T) {
 				mock.ExpectQuery(regexp.QuoteMeta(query)).WithArgs(int64(1)).WillReturnRows(
 					sqlmock.NewRows([]string{"id", "number", "name", "fare"}).
 						AddRow(1, "4988", "Bus One", 3.1))
-				result, err := Get(1, true)
+				result, err := Get(ctx, 1, true)
 
 				So(err, ShouldBeNil)
 				So(mock.ExpectationsWereMet(), ShouldBeNil)
@@ -107,7 +111,7 @@ func TestGet(t *testing.T) {
 				})
 			})
 			Convey("When injection fail", func() {
-				monkey.Patch(repository.FetchManyByBus, func(busID int64) ([]*model.Schedule, error) {
+				monkey.Patch(repository.FetchManyByBus, func(ctx context.Context, busID int64) ([]*model.Schedule, error) {
 					return nil, errors.New("fail")
 				})
 				defer monkey.Unpatch(repository.FetchManyByBus)
@@ -118,7 +122,7 @@ func TestGet(t *testing.T) {
 				mock.ExpectQuery(regexp.QuoteMeta(query)).WithArgs(int64(1)).WillReturnRows(
 					sqlmock.NewRows([]string{"id", "number", "name", "fare"}).
 						AddRow(1, "4988", "Bus One", 3.1))
-				result, err := Get(1, true)
+				result, err := Get(ctx, 1, true)
 
 				So(err, ShouldBeNil)
 				So(mock.ExpectationsWereMet(), ShouldBeNil)
@@ -132,7 +136,7 @@ func TestGet(t *testing.T) {
 					new(model.Schedule),
 					new(model.Schedule),
 				}
-				monkey.Patch(repository.FetchManyByBus, func(busID int64) ([]*model.Schedule, error) {
+				monkey.Patch(repository.FetchManyByBus, func(ctx context.Context, busID int64) ([]*model.Schedule, error) {
 					return expectedSchedules, nil
 				})
 				defer monkey.Unpatch(repository.FetchManyByBus)
@@ -142,7 +146,7 @@ func TestGet(t *testing.T) {
 
 				mock.ExpectQuery(regexp.QuoteMeta(query)).WithArgs(int64(1)).WillReturnRows(
 					sqlmock.NewRows([]string{"id", "number", "name", "fare"}))
-				result, err := Get(1, true)
+				result, err := Get(ctx, 1, true)
 
 				So(err, ShouldBeNil)
 				So(result, ShouldBeNil)
@@ -158,7 +162,7 @@ func TestGet(t *testing.T) {
 				mock.ExpectQuery(regexp.QuoteMeta(query)).WithArgs(int64(1)).
 					WillReturnError(expected)
 
-				result, err := Get(1, false)
+				result, err := Get(ctx, 1, false)
 				So(err, ShouldEqual, expected)
 				So(result, ShouldBeNil)
 			})
@@ -171,7 +175,7 @@ func TestGet(t *testing.T) {
 				mock.ExpectQuery(regexp.QuoteMeta(query)).WithArgs(int64(1)).WillReturnRows(
 					sqlmock.NewRows([]string{"id", "number", "name", "fare"}).
 						AddRow("a", "a", 1, "a"))
-				result, err := Get(1, false)
+				result, err := Get(ctx, 1, false)
 
 				So(err, ShouldNotBeNil)
 				So(result, ShouldBeNil)

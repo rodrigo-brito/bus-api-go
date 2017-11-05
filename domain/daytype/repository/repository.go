@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"context"
+
 	"github.com/golang/glog"
 	"github.com/nleof/goyesql"
 	"github.com/rodrigo-brito/bus-api-go/domain/daytype/model"
@@ -26,31 +28,35 @@ func getDayTyppeBusCacheKey(busID int64) string {
 	return fmt.Sprintf("daytype-bus-%d", busID)
 }
 
-func GetByBus(busID int64, injectSchedule bool) ([]*model.DayType, error) {
-	conn := mysql.GetConnection()
+func GetByBus(ctx context.Context, busID int64, injectSchedule bool) ([]*model.DayType, error) {
+	db := mysql.FromContext(ctx)
+	cache := memcached.FromContext(ctx)
 
 	var dayTypes []*model.DayType
 	key := getDayTyppeBusCacheKey(busID)
 
-	memcached.GetSet(key, &dayTypes, func() (interface{}, error) {
-		rows, err := conn.Query(queries["by-bus"], busID)
+	err := cache.GetSet(key, &dayTypes, func() (interface{}, error) {
+		rows, err := db.Query(queries["by-bus"], busID)
 		if err != nil {
 			return nil, err
 		}
 		res, err := parseRows(rows)
 		return &res, err
 	}, time.Hour*48)
+	if err != nil {
+		return nil, err
+	}
 
 	if injectSchedule {
-		injectSchedules(dayTypes, busID)
+		injectSchedules(ctx, dayTypes, busID)
 	}
 
 	return dayTypes, nil
 }
 
-func injectSchedules(dayTypes []*model.DayType, busID int64) {
+func injectSchedules(ctx context.Context, dayTypes []*model.DayType, busID int64) {
 	for _, dayType := range dayTypes {
-		schedules, err := repository.FetchManyByBusDayType(busID, dayType.ID)
+		schedules, err := repository.FetchManyByBusDayType(ctx, busID, dayType.ID)
 		if err != nil {
 			glog.Error(err)
 		}

@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"time"
 
+	"context"
+
 	"github.com/golang/glog"
 	"github.com/nleof/goyesql"
 	"github.com/rodrigo-brito/bus-api-go/domain/bus/repository"
@@ -26,12 +28,13 @@ func getCompanyCacheKey(ID int64) string {
 	return fmt.Sprintf("company-%d", ID)
 }
 
-func GetAll() ([]*model.Company, error) {
-	conn := mysql.GetConnection()
+func GetAll(ctx context.Context) ([]*model.Company, error) {
+	db := mysql.FromContext(ctx)
+	cache := memcached.FromContext(ctx)
 	var companies []*model.Company
 
-	err := memcached.GetSet("all-companies", &companies, func() (interface{}, error) {
-		rows, err := conn.Query(queries["all"])
+	err := cache.GetSet("all-companies", &companies, func() (interface{}, error) {
+		rows, err := db.Query(queries["all"])
 		if err != nil {
 			return nil, err
 		}
@@ -41,14 +44,15 @@ func GetAll() ([]*model.Company, error) {
 	return companies, err
 }
 
-func Get(ID int64, injectBus bool) (*model.Company, error) {
-	conn := mysql.GetConnection()
+func Get(ctx context.Context, ID int64, injectBus bool) (*model.Company, error) {
+	db := mysql.FromContext(ctx)
+	cache := memcached.FromContext(ctx)
 
 	company := new(model.Company)
 	key := getCompanyCacheKey(ID)
 
-	err := memcached.GetSet(key, company, func() (interface{}, error) {
-		rows, err := conn.Query(queries["by-id"], ID)
+	err := cache.GetSet(key, company, func() (interface{}, error) {
+		rows, err := db.Query(queries["by-id"], ID)
 		if err != nil {
 			return nil, err
 		}
@@ -65,7 +69,7 @@ func Get(ID int64, injectBus bool) (*model.Company, error) {
 	}
 
 	if !company.IsEmpty() && injectBus {
-		company.Bus, err = repository.GetByCompany(ID)
+		company.Bus, err = repository.GetByCompany(ctx, ID)
 		if err != nil {
 			glog.Error(err)
 		}

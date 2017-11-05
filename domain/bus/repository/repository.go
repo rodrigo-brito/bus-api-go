@@ -7,6 +7,8 @@ import (
 
 	"time"
 
+	"context"
+
 	"github.com/golang/glog"
 	"github.com/nleof/goyesql"
 	"github.com/rodrigo-brito/bus-api-go/domain/bus/model"
@@ -23,9 +25,10 @@ func init() {
 	queries = goyesql.MustParseFile(path)
 }
 
-func GetAll() ([]*model.Bus, error) {
-	conn := mysql.GetConnection()
-	rows, err := conn.Query(queries["all"])
+func GetAll(ctx context.Context) ([]*model.Bus, error) {
+	db := mysql.FromContext(ctx)
+
+	rows, err := db.Query(queries["all"])
 	if err != nil {
 		return nil, err
 	}
@@ -40,14 +43,15 @@ func getBusCompanyCacheKey(companyID int64) string {
 	return fmt.Sprintf("bus-company-%d", companyID)
 }
 
-func Get(ID int64, injectSchedule bool) (*model.Bus, error) {
-	conn := mysql.GetConnection()
+func Get(ctx context.Context, ID int64, injectSchedule bool) (*model.Bus, error) {
+	db := mysql.FromContext(ctx)
+	cache := memcached.FromContext(ctx)
 
 	bus := new(model.Bus)
 	key := getBusCacheKey(ID)
 
-	err := memcached.GetSet(key, bus, func() (interface{}, error) {
-		rows, err := conn.Query(queries["by-id"], ID)
+	err := cache.GetSet(key, bus, func() (interface{}, error) {
+		rows, err := db.Query(queries["by-id"], ID)
 		if err != nil {
 			return nil, err
 		}
@@ -67,19 +71,20 @@ func Get(ID int64, injectSchedule bool) (*model.Bus, error) {
 	}
 
 	if !bus.IsEmpty() && injectSchedule {
-		injectSchedules(bus)
+		injectSchedules(ctx, bus)
 	}
 
 	return bus, nil
 }
 
-func GetByCompany(companyID int64) ([]*model.Bus, error) {
-	conn := mysql.GetConnection()
+func GetByCompany(ctx context.Context, companyID int64) ([]*model.Bus, error) {
+	db := mysql.FromContext(ctx)
+	cache := memcached.FromContext(ctx)
 
 	var bus []*model.Bus
 	key := getBusCompanyCacheKey(companyID)
-	err := memcached.GetSet(key, &bus, func() (interface{}, error) {
-		rows, err := conn.Query(queries["by-company"], companyID)
+	err := cache.GetSet(key, &bus, func() (interface{}, error) {
+		rows, err := db.Query(queries["by-company"], companyID)
 		if err != nil {
 			return nil, err
 		}
@@ -89,8 +94,8 @@ func GetByCompany(companyID int64) ([]*model.Bus, error) {
 	return bus, err
 }
 
-func injectSchedules(bus *model.Bus) {
-	schedules, err := repository.FetchManyByBus(bus.ID)
+func injectSchedules(ctx context.Context, bus *model.Bus) {
+	schedules, err := repository.FetchManyByBus(ctx, bus.ID)
 	if err != nil {
 		glog.Error(err)
 	}

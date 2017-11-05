@@ -6,8 +6,8 @@ import (
 	"golang.org/x/net/context"
 )
 
-func DefaultContext() context.Context {
-	ctx := memcached.NewContext(context.Background())
+func DefaultContext(BPC bool) context.Context {
+	ctx := memcached.NewContext(context.Background(), BPC)
 	ctx = mysql.NewContext(ctx)
 	return ctx
 }

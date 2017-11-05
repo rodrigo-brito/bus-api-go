@@ -17,7 +17,7 @@ func GetDayTypeScheduleHandle(w http.ResponseWriter, r *http.Request, p httprout
 		glog.Error(err)
 		return
 	}
-	bus, err := dr.GetByBus(busID, true)
+	bus, err := dr.GetByBus(r.Context(), busID, true)
 	if err != nil {
 		glog.Error(err)
 		w.WriteHeader(http.StatusServiceUnavailable)
