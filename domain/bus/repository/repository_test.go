@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"testing"
 
 	"errors"
@@ -8,7 +9,7 @@ import (
 	"regexp"
 
 	"github.com/bouk/monkey"
-	"github.com/rodrigo-brito/bus-api-go/domain/schedule/model"
+	sm "github.com/rodrigo-brito/bus-api-go/domain/schedule/model"
 	"github.com/rodrigo-brito/bus-api-go/domain/schedule/repository"
 	lcontext "github.com/rodrigo-brito/bus-api-go/lib/context"
 	"github.com/rodrigo-brito/bus-api-go/test/mysql"
@@ -18,55 +19,16 @@ import (
 	"gopkg.in/DATA-DOG/go-sqlmock.v1"
 )
 
-func TestGetAll(t *testing.T) {
-	ctx := lcontext.DefaultContext(true)
-	Convey("Given a working database connection", t, func() {
-		mock, err := mysql.GetDatabaseMock()
-		defer mysql.UnmockDatabase()
-		So(err, ShouldBeNil)
-		Convey("When everything is OK", func() {
-			Convey("It should execute the correct query and return a valid result", func() {
-				query := queries["all"]
-				So(query, should.NotBeEmpty)
-				mock.ExpectQuery(query).WillReturnRows(
-					sqlmock.NewRows([]string{"id", "number", "name", "fare"}).
-						AddRow(1, 4988, "Bus One", 3.1))
-				result, err := GetAll(ctx)
-				So(err, ShouldBeNil)
-				So(result, ShouldHaveLength, 1)
-				So(result[0].ID, ShouldEqual, 1)
-				So(*result[0].Number, ShouldEqual, "4988")
-				So(result[0].Name, ShouldEqual, "Bus One")
-				So(result[0].Fare, ShouldEqual, 3.1)
-				So(mock.ExpectationsWereMet(), ShouldBeNil)
-			})
-		})
-		Convey("When database fail", func() {
-			Convey("It should execute the correct query and return error", func() {
-				query := queries["all"]
-				So(query, should.NotBeEmpty)
-
-				expected := errors.New("fail")
-				mock.ExpectQuery(query).WillReturnError(expected)
-				result, err := GetAll(ctx)
-
-				So(err, ShouldEqual, expected)
-				So(result, ShouldBeNil)
-				So(mock.ExpectationsWereMet(), ShouldBeNil)
-			})
-		})
-	})
-}
-
 func TestGet(t *testing.T) {
-	ctx := lcontext.DefaultContext(true)
 	Convey("Given a working database connection", t, func() {
-		mock, err := mysql.GetDatabaseMock()
+		mock, err := mysql.GetDatabaseMock(true)
 		defer mysql.UnmockDatabase()
+		ctx := lcontext.DefaultContext(true)
 		So(err, ShouldBeNil)
 		Convey("When everything is OK", func() {
 			Convey("When the schedules is not required", func() {
 				query := queries["by-id"]
+				fmt.Println("Q = ", query)
 				So(query, ShouldNotBeEmpty)
 
 				mock.ExpectQuery(regexp.QuoteMeta(query)).WithArgs(int64(1)).WillReturnRows(
@@ -82,12 +44,12 @@ func TestGet(t *testing.T) {
 				So(mock.ExpectationsWereMet(), ShouldBeNil)
 			})
 			Convey("When the schedules is required", func() {
-				expectedSchedules := []*model.Schedule{
-					new(model.Schedule),
-					new(model.Schedule),
-					new(model.Schedule),
+				expectedSchedules := []*sm.Schedule{
+					new(sm.Schedule),
+					new(sm.Schedule),
+					new(sm.Schedule),
 				}
-				monkey.Patch(repository.FetchManyByBus, func(ctx context.Context, busID int64) ([]*model.Schedule, error) {
+				monkey.Patch(repository.FetchManyByBus, func(ctx context.Context, busID int64) ([]*sm.Schedule, error) {
 					return expectedSchedules, nil
 				})
 				defer monkey.Unpatch(repository.FetchManyByBus)
@@ -111,7 +73,7 @@ func TestGet(t *testing.T) {
 				})
 			})
 			Convey("When injection fail", func() {
-				monkey.Patch(repository.FetchManyByBus, func(ctx context.Context, busID int64) ([]*model.Schedule, error) {
+				monkey.Patch(repository.FetchManyByBus, func(ctx context.Context, busID int64) ([]*sm.Schedule, error) {
 					return nil, errors.New("fail")
 				})
 				defer monkey.Unpatch(repository.FetchManyByBus)
@@ -131,12 +93,12 @@ func TestGet(t *testing.T) {
 				})
 			})
 			Convey("When the database return a empty result", func() {
-				expectedSchedules := []*model.Schedule{
-					new(model.Schedule),
-					new(model.Schedule),
-					new(model.Schedule),
+				expectedSchedules := []*sm.Schedule{
+					new(sm.Schedule),
+					new(sm.Schedule),
+					new(sm.Schedule),
 				}
-				monkey.Patch(repository.FetchManyByBus, func(ctx context.Context, busID int64) ([]*model.Schedule, error) {
+				monkey.Patch(repository.FetchManyByBus, func(ctx context.Context, busID int64) ([]*sm.Schedule, error) {
 					return expectedSchedules, nil
 				})
 				defer monkey.Unpatch(repository.FetchManyByBus)
@@ -149,7 +111,7 @@ func TestGet(t *testing.T) {
 				result, err := Get(ctx, 1, true)
 
 				So(err, ShouldBeNil)
-				So(result, ShouldBeNil)
+				So(result.IsEmpty(), ShouldBeTrue)
 				So(mock.ExpectationsWereMet(), ShouldBeNil)
 			})
 		})
@@ -178,6 +140,46 @@ func TestGet(t *testing.T) {
 				result, err := Get(ctx, 1, false)
 
 				So(err, ShouldNotBeNil)
+				So(result, ShouldBeNil)
+				So(mock.ExpectationsWereMet(), ShouldBeNil)
+			})
+		})
+	})
+}
+
+func TestGetAll(t *testing.T) {
+	Convey("Given a working database connection", t, func() {
+		mock, err := mysql.GetDatabaseMock(true)
+		defer mysql.UnmockDatabase()
+		So(err, ShouldBeNil)
+		ctx := lcontext.DefaultContext(true)
+		Convey("When everything is OK", func() {
+			Convey("It should execute the correct query and return a valid result", func() {
+				query := queries["all"]
+				So(query, should.NotBeEmpty)
+				mock.ExpectQuery(query).WillReturnRows(
+					sqlmock.NewRows([]string{"id", "number", "name", "fare"}).
+						AddRow(1, 4988, "Bus One", 3.1))
+				result, err := GetAll(ctx)
+				So(err, ShouldBeNil)
+				So(result, ShouldHaveLength, 1)
+				So(result[0].ID, ShouldEqual, 1)
+				So(*result[0].Number, ShouldEqual, "4988")
+				So(result[0].Name, ShouldEqual, "Bus One")
+				So(result[0].Fare, ShouldEqual, 3.1)
+				So(mock.ExpectationsWereMet(), ShouldBeNil)
+			})
+		})
+		Convey("When database fail", func() {
+			Convey("It should execute the correct query and return error", func() {
+				query := queries["all"]
+				So(query, should.NotBeEmpty)
+
+				expected := errors.New("fail")
+				mock.ExpectQuery(query).WillReturnError(expected)
+				result, err := GetAll(ctx)
+
+				So(err, ShouldEqual, expected)
 				So(result, ShouldBeNil)
 				So(mock.ExpectationsWereMet(), ShouldBeNil)
 			})
