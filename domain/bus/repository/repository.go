@@ -51,7 +51,6 @@ func Get(ctx context.Context, ID int64, injectSchedule bool) (*model.Bus, error)
 	key := getBusCacheKey(ID)
 
 	err := cache.GetSet(key, bus, func() (interface{}, error) {
-		fmt.Println("No CACHE", queries["by-id"])
 		rows, err := db.Query(queries["by-id"], ID)
 		if err != nil {
 			return nil, err

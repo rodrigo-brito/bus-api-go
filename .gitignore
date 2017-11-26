@@ -1,5 +1,5 @@
 .idea
 docker/volumes
 config/settings.yaml
-
+bus-api-go
 *.coverprofile
