@@ -35,7 +35,7 @@ func CloseConnection() {
 func initConnection() {
 	var err error
 	conf := viper.GetStringMapString("mysql")
-	db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+	db, err = sql.Open("mysql", fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=true",
 		conf["user"], conf["password"], conf["address"], conf["port"], conf["database"]))
 	if err != nil {
 		glog.Error(err)

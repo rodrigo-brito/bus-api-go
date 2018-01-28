@@ -17,7 +17,8 @@ CREATE TABLE IF NOT EXISTS `bus` (
   `name` varchar(255) DEFAULT NULL,
   `number` varchar(255) DEFAULT NULL,
   `company_id` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`id`),
+  `last_update` DATE,
+PRIMARY KEY (`id`),
   KEY `fk_company_key` (`company_id`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=29 ;
 
