@@ -105,8 +105,8 @@ func injectSchedules(ctx context.Context, bus *model.Bus) {
 func parseRows(rows *sql.Rows) (result []*model.Bus, err error) {
 	for rows.Next() {
 		bus := new(model.Bus)
-		err := rows.Scan(&bus.ID, &bus.Number, &bus.Name, &bus.Fare, &bus.LastUpdate)
-		if err != nil {
+		if err := rows.Scan(&bus.ID, &bus.Number, &bus.Name, &bus.Description, &bus.Fare,
+			&bus.LastUpdate); err != nil {
 			return nil, err
 		}
 		result = append(result, bus)

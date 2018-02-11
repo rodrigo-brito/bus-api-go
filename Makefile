@@ -1,7 +1,7 @@
 run:
 	cd docker
 	mkdir -p ./docker/volumes/mysql
-	docker-compose -f docker/docker-compose-dev.yaml -p bus-api up
+	docker-compose -f docker/docker-compose-dev.yaml -p bus-api up --force-recreate
 	docker logs -f --tail=50 busapi_api_1
 cover:
 	echo "" > coverage.txt

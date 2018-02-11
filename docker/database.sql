@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `bus` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `fare` double NOT NULL,
   `name` varchar(255) DEFAULT NULL,
+  `description` varchar(255),
   `number` varchar(255) DEFAULT NULL,
   `company_id` bigint(20) DEFAULT NULL,
   `last_update` DATE,
@@ -26,9 +27,9 @@ PRIMARY KEY (`id`),
 -- Sample data for `bus`
 --
 
-INSERT INTO `bus` (`id`, `fare`, `name`, `number`, `company_id`) VALUES
-(1, 4.8, 'BH/Sabará', '4988', 1),
-(2, 6.1, 'BH/Sabará - Executivo', '4987', 1);
+INSERT INTO `bus` (`id`, `fare`, `name`, `description`, `number`, `company_id`) VALUES
+(1, 4.8, 'BH/Sabará', 'Linha que interliga Sabará e BH', '4988', 1),
+(2, 6.1, 'BH/Sabará - Executivo', 'Linha executiva que interliga Sabará e Belo Horizonte', '4987', 1);
 
 --
 -- Table structure `company`
