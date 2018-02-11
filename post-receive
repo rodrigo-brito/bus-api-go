@@ -1,4 +1,6 @@
 #!/bin/sh
 set -e
 
+docker restart servidores_apionibus_1
+
 echo "All done!"
